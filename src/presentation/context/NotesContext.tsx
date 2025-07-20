@@ -9,6 +9,9 @@ interface NotesContext {
     selectNote: (id:string) => void;
     deselectAll: () => void;
     removeNotesSelecteds: () => void;
+    checkAsView:(id:string) => void;
+    getNote: (id:string) => Note;
+    removeNote: (id:string) => void;
 }
 
 export const NotesContext = createContext<NotesContext|null>(null);
@@ -17,7 +20,8 @@ export const NotesProvider = ({children}:PropsWithChildren) => {
     const [ notes, setNotes ] = useState<Note[]>([]);
     const [ hasSelectedNotes, setHasSeletedNotes ] = useState<boolean>(false);
     const addNote = (note:Note):void => {
-        setNotes([note, ...notes]);
+        const newNotes = [note, ...notes]
+        orderNotes(newNotes);
     }
     const thereAreNotesSelecteds = (notes:Note[]): void => {
         const result = notes.find(note => note.isSelected);
@@ -33,6 +37,19 @@ export const NotesProvider = ({children}:PropsWithChildren) => {
         thereAreNotesSelecteds(markerNotesHasSelected);
         setNotes(markerNotesHasSelected);
     }
+    const orderNotes = (notes:Note[]) => {
+        const notes_copy = [...notes];
+        const result = notes_copy.sort((a, b) => {
+            if(b.isNew > a.isNew) {
+                return 1;
+            } 
+            if(b.isNew < a.isNew ) {
+                return -1;
+            }
+            return 0
+        });
+        setNotes(result);
+    }
     const deselectAll = ():void => {
         const notes_copy = [...notes];
         const result = notes_copy.map(note => ({...note, isSelected:false}));
@@ -45,6 +62,20 @@ export const NotesProvider = ({children}:PropsWithChildren) => {
         setHasSeletedNotes(false);
         setNotes(result);
     } 
+    const checkAsView = (id:string):void => {
+        const notes_copy = [...notes];
+        const result = notes_copy.map(note => note.id === id ? {...note, isNew:false} : note);
+        orderNotes(result);
+    }
+    const getNote = (id:string):Note => {
+        return notes.find(note => note.id === id)!;
+    }
+    const removeNote = (id:string) => {
+        const notes_copy = [...notes];
+        const result = notes_copy.filter(note => note.id !== id);
+        setHasSeletedNotes(false);
+        setNotes(result);
+    }
     return (
         <NotesContext.Provider value={{
             notes,
@@ -52,7 +83,10 @@ export const NotesProvider = ({children}:PropsWithChildren) => {
             addNote,
             selectNote,
             deselectAll,
-            removeNotesSelecteds
+            removeNotesSelecteds,
+            checkAsView,
+            getNote,
+            removeNote
         }}>
             {children}
         </NotesContext.Provider>

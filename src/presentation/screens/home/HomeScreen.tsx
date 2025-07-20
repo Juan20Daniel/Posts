@@ -42,7 +42,7 @@ export const HomeScreen = () => {
                             </View>
                         )}
                         ListFooterComponent={() => (
-                            <View style={{height:40}} />
+                            <View style={{height:140}} />
                         )}
                         showsVerticalScrollIndicator={false}
                     />
