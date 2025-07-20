@@ -1,12 +1,19 @@
 import { NavigationContainer } from "@react-navigation/native";
 import StackNavigation from "./presentation/navigators/StackNavigator";
+import { StatusBar, useColorScheme } from "react-native";
+import { NotesProvider } from "./presentation/context/NotesContext";
 
 function App() {
-  //const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme();
   return (
-    <NavigationContainer>
-      <StackNavigation />
-    </NavigationContainer>
+    <>
+      <StatusBar barStyle={isDarkMode === 'dark' ? 'light-content' : 'dark-content'} />
+      <NotesProvider>
+        <NavigationContainer>
+          <StackNavigation />
+        </NavigationContainer>
+      </NotesProvider>
+    </>
   );
 }
 

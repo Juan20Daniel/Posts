@@ -17,7 +17,11 @@ function StackNavigation() {
       }}
     >
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Create" component={CreateScreen} />
+      <Stack.Screen 
+        name="Create" 
+        component={CreateScreen} 
+        options={{animation:'slide_from_left'}}
+      />
     </Stack.Navigator>
   );
 }
